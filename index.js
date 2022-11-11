@@ -173,16 +173,44 @@ app.post("/insert_bill", async(req, resp) => {
 //     "atributes":[{"name":"mobApp", "value":"Bill-Generate"}]
 // }
 
+// ----------------Update API--------------------
 
-app.post("/edit_user", (req, resp) => {
+app.put("/edit_user", (req, resp) => {
     const data=req.body;
-    con.query("INSERT INTO tbl_users SET?",data, (err, results, fields) => {
+    console.log(data)
+    let insertData = [data.name, data.email, data.user_name, data.phone, data.role, data.id];
+    con.query("UPDATE tbl_users SET name = ?, email = ?, user_name = ?, phone = ?, role = ? where id = ?",insertData, 
+    (err, results) => {
         if (err) throw err;
         
             resp.send(results)
         
     })
 })
+
+app.put("/edit_mfr", (req, resp) => {
+    const data=req.body;
+    console.log(data)
+    let insertData = [data.name, data.email, data.phone, data.al_phone, data.company_name, data.city, data.address, data.gst_no, data.id];
+    con.query("UPDATE tbl_manufacturers SET name = ?, email = ?, phone = ?, alt_phone = ?, company_name = ?, city = ?, address = ?, gst_no = ?  where id = ?",insertData, 
+    (err, results) => {
+        if (err) throw err;
+        
+            resp.send(results)
+        
+    })
+})
+
+
+// ----------------Update API--------------------
+
+
+
+
+
+
+// ----------------get API--------------------
+
 
 app.get("/get_user/:id", async(req, resp) => {
 
@@ -193,8 +221,20 @@ app.get("/get_user/:id", async(req, resp) => {
     });
 })
 
+app.get("/get_mfr/:id", async(req, resp) => {
+
+    con.query('SELECT * FROM tbl_manufacturers WHERE id ='+req.params.id,  (err, result)=> {
+        if (err) throw err;
+        resp.send(result)
+        console.log("1 record deleted");
+    });
+})
+
+// ----------------get API--------------------
 
 
+
+// ----------------delete API--------------------
 app.delete("/delete_user/:id", async(req, resp) => {
 
     con.query('DELETE FROM tbl_users WHERE id ='+req.params.id,  (err, result)=> {
@@ -203,6 +243,17 @@ app.delete("/delete_user/:id", async(req, resp) => {
         console.log("1 record deleted");
     });
 })
+
+app.delete("/delete_mfr/:id", async(req, resp) => {
+
+    con.query('DELETE FROM tbl_manufacturers WHERE id ='+req.params.id,  (err, result)=> {
+        if (err) throw err;
+        resp.send({'message':'success'})
+        console.log("1 record deleted");
+    });
+})
+
+// ----------------delete API--------------------
 
 
 
