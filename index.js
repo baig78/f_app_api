@@ -90,6 +90,15 @@ app.get("/payments", (req, resp) => {
         }
     })
 })
+app.get("/bills", (req, resp) => {
+    con.query("select * from tbl_bill", (err, result) => {
+        if (err) {
+            resp.send("error")
+        } else {
+            resp.send(result)
+        }
+    })
+})
 
 
 
@@ -188,11 +197,38 @@ app.put("/edit_user", (req, resp) => {
     })
 })
 
+
+app.put("/edit_rtr", (req, resp) => {
+    const data=req.body;
+    console.log(data)
+    let insertData = [data.name, data.email, data.user_name, data.phone, data.role, data.id];
+    con.query("UPDATE tbl_retailers SET name = ?, email = ?, user_name = ?, phone = ?, role = ? where id = ?",insertData, 
+    (err, results) => {
+        if (err) throw err;
+        
+            resp.send(results)
+        
+    })
+})
+
 app.put("/edit_mfr", (req, resp) => {
     const data=req.body;
     console.log(data)
     let insertData = [data.name, data.email, data.phone, data.al_phone, data.company_name, data.city, data.address, data.gst_no, data.id];
     con.query("UPDATE tbl_manufacturers SET name = ?, email = ?, phone = ?, alt_phone = ?, company_name = ?, city = ?, address = ?, gst_no = ?  where id = ?",insertData, 
+    (err, results) => {
+        if (err) throw err;
+        
+            resp.send(results)
+        
+    })
+})
+
+app.put("/edit_bill", (req, resp) => {
+    const data=req.body;
+    console.log(data)
+    let insertData = [data.invoice_no, data.prd_batch_uid, data.rtr_id, data.qty, data.description, data.advance, data.balance, data.total, data.balance_due_date, data.insert_date, data.updated_date, data.gen_otp, data.otp_status, data.insert_user_id, data.update_user_id, data.id];
+    con.query("UPDATE tbl_bill SET invoice_no=?, prd_batch_uid=?, rtr_id=?, qty=?, description=?, advance=?, balance=?, total=?, balance_due_date=?, insert_date=?, updated_date=?, gen_otp=?, otp_status=?, insert_user_id=?, update_user_id=?  where id=?",insertData, 
     (err, results) => {
         if (err) throw err;
         
@@ -215,6 +251,14 @@ app.put("/edit_mfr", (req, resp) => {
 app.get("/get_user/:id", async(req, resp) => {
 
     con.query('SELECT * FROM tbl_users WHERE id ='+req.params.id,  (err, result)=> {
+        if (err) throw err;
+        resp.send(result)
+        console.log("1 record deleted");
+    });
+})
+app.get("/get_rtr/:id", async(req, resp) => {
+
+    con.query('SELECT * FROM tbl_retailers WHERE id ='+req.params.id,  (err, result)=> {
         if (err) throw err;
         resp.send(result)
         console.log("1 record deleted");
@@ -247,6 +291,15 @@ app.delete("/delete_user/:id", async(req, resp) => {
 app.delete("/delete_mfr/:id", async(req, resp) => {
 
     con.query('DELETE FROM tbl_manufacturers WHERE id ='+req.params.id,  (err, result)=> {
+        if (err) throw err;
+        resp.send({'message':'success'})
+        console.log("1 record deleted");
+    });
+})
+
+app.delete("/delete_bill/:id", async(req, resp) => {
+
+    con.query('DELETE FROM tbl_bill WHERE id ='+req.params.id,  (err, result)=> {
         if (err) throw err;
         resp.send({'message':'success'})
         console.log("1 record deleted");
